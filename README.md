@@ -1,0 +1,1 @@
+This project is based on the TeaHouse template, which you can find at ThemeWagon. The template serves as the foundational design and structure, upon which additional features and functionalities specific to this demo application have been built.
