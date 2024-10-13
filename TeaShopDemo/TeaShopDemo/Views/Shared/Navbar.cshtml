@@ -3,7 +3,8 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-2 py-lg-0">
             <a href="index.html" class="navbar-brand">
-                <img class="img-fluid" src="img/logo.png" alt="Logo">
+                <img class="img-fluid" src="@Url.Content("~/img/logo.png")" alt="Logo">
+
             </a>
             <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -14,7 +15,7 @@
                     <a asp-controller="about" asp-action="Index" class="nav-item nav-link">About</a>
                     <a asp-controller="Products" asp-action="Index" class="nav-item nav-link">Products</a>
                     <a asp-controller="Store" asp-action="Index" class="nav-item nav-link">Store</a>
-                    <button style="min-width:8rem" class="btn btn-primary">Log in</button>               
+                    <partial name="_LoginPartial" />              
                 </div>               
             </div>
         </nav>
