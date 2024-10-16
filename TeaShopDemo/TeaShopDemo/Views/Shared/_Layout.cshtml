@@ -21,13 +21,14 @@
 
     <!-- Libraries Stylesheet -->
     <link rel="stylesheet" href="@Url.Content("~/lib/animate/animate.min.css")">
-    <link rel="stylesheet" href="@Url.Content("~/lib/animate/owl.carousel.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/lib/owlcarousel/assets/owl.carousel.min.css")">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="@Url.Content("~/css/bootstrap.min.css")" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="@Url.Content("~/css/style.css")" rel="stylesheet">
+    <base href="~/" />
 </head>
 <body>
     <!-- Spinner Start -->
@@ -65,10 +66,14 @@
     <!-- Template Javascript -->
     <script src="@Url.Content("~/js/main.js")"></script>
 
-    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
-    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
+@*     <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script> *@
+   @*  <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script> *@
     <script src="@Url.Content("~/js/site.js")"></script>
 
+    <script src="@Url.Content("~/")_framework/blazor.server.js"></script>
+
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

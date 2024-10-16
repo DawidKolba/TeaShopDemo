@@ -1,0 +1,83 @@
+﻿@inject TeaShopDemo.Services.CartService CartService
+@using Microsoft.JSInterop
+@using TeaShopDemo.Models
+@using Microsoft.AspNetCore.Components.Web
+
+@inject IJSRuntime js
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <p class="fs-5 fw-medium fst-italic text-primary">Online Store</p>
+            <h1 class="display-6">Want to stay healthy? Choose tea taste</h1>
+        </div>
+        <div class="row g-4">
+            @foreach (var product in Products)
+            {
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="store-item position-relative text-center">
+                        <img class="img-fluid" src="@product.ImageUrl" alt="@product.Name">
+                        <div class="p-4">
+                            <div class="text-center mb-3">
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                                <small class="fa fa-star text-primary"></small>
+                            </div>
+                            <h4 class="mb-3">@product.Name</h4>
+                            <p>@product.Description</p>
+                            <h4 class="text-primary">@product.Price.ToString("C")</h4>
+                        </div>
+                        <div class="store-overlay" style="pointer-events: none;">
+                            <a class="btn btn-primary rounded-pill py-2 px-4 m-2" style="pointer-events: auto;">More Detail <i class="fa fa-arrow-right ms-2"></i></a>
+                            <button class="btn btn-dark rounded-pill py-2 px-4 m-2" style="pointer-events: auto;" @onclick="() => AddToCart(product)">Add to Cart <i class="fa fa-cart-plus ms-2"></i></button>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
+                <a href="#" class="btn btn-primary rounded-pill py-3 px-5">View More Products</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" @ref="toastElement">
+        <div class="d-flex">
+            <div class="toast-body">
+                Product has been added to the cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<Product> Products = new()
+    {
+        new Product { ProductId = 1, Name = "Nature close tea", Price = 19.00m, ImageUrl = "img/store-product-1.jpg", Description = "..." },
+        new Product { ProductId = 2, Name = "Green tea tulsi", Price = 19.00m, ImageUrl = "img/store-product-2.jpg", Description = "..." },
+        new Product { ProductId = 3, Name = "Instant tea premix", Price = 19.00m, ImageUrl = "img/store-product-3.jpg", Description = "..." },
+    };
+
+    private ElementReference toastElement;
+    private bool isToastShown = false;
+
+    async Task AddToCart(Product product)
+    {
+        await CartService.AddToCart(new CartItem
+            {
+                ProductId = product.ProductId,
+                Name = product.Name,
+                Price = product.Price,
+                Quantity = 1
+            });
+                
+    }
+
+   
+}

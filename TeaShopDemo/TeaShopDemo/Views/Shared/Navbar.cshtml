@@ -1,4 +1,7 @@
 ﻿<!-- Navbar Start -->
+@inject TeaShopDemo.Services.CartService CartService
+
+
 <div class="container-fluid bg-white sticky-top">
     <div class="container">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-2 py-lg-0">
@@ -14,11 +17,51 @@
                     <a asp-controller="Home" asp-action="Index" class="nav-item nav-link active">Home</a>
                     <a asp-controller="about" asp-action="Index" class="nav-item nav-link">About</a>
                     <a asp-controller="Products" asp-action="Index" class="nav-item nav-link">Products</a>
-                    <a asp-controller="Store" asp-action="Index" class="nav-item nav-link">Store</a>
+                    <a asp-controller="Store" asp-action="Index" class="nav-item nav-link">Store</a>                  
+
                     <partial name="_LoginPartial" />              
-                </div>               
+                </div>
+                <a asp-controller="Cart" asp-action="Index" class="nav-item nav-link position-relative">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span id="cartItemCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @CartService.GetCartItems().Count
+                    </span>
+                </a>
+
             </div>
         </nav>
     </div>
 </div>
 <!-- Navbar End -->
+
+<script src="~/lib/signalr.min.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/cartHub")
+        .build();
+
+    connection.on("UpdateCartCount", function (count) {
+        document.getElementById("cartItemCount").innerText = count;
+    });
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+</script>
+
+@* <script>
+    $(document).ready(function () {
+        function updateCartCount() {
+            $.ajax({
+                url: '/api/Cart/Count',
+                type: 'GET',
+                success: function (data) {
+                    $('#cartItemCount').text(data);
+                }
+            });
+        }
+        setInterval(updateCartCount, 500);
+    });
+</script> *@
+<script src="~/js/signalr.min.js"></script>
