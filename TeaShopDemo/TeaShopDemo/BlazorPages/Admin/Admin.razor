@@ -1,0 +1,70 @@
+﻿@page "/admin"
+@using Microsoft.AspNetCore.Components.Web
+@using TeaShopDemo.Pages.Admin
+
+<div class="container" style="margin-top: 10rem;">
+    <div class="row">
+        <div class="col-12 col-md-3">
+            <nav>
+                <div class="d-grid gap-3">
+                    <button class="btn custom-btn @((currentPage == AdminPages.AddProduct) ? "active" : "inactive")"
+                            @onclick="() => ShowPage(AdminPages.AddProduct)">
+                        Add Product
+                    </button>
+                    <button class="btn custom-btn @((currentPage == AdminPages.ViewProducts) ? "active" : "inactive")"
+                            @onclick="() => ShowPage(AdminPages.ViewProducts)">
+                        View Products
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <div class="col-12 col-md-9">
+            @if (currentPage == AdminPages.AddProduct)
+            {
+                <AddProduct />
+            }
+            else if (currentPage == AdminPages.ViewProducts)
+            {
+                <ViewProductList />
+            }
+            else
+            {
+                <p>Select an option from the menu.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private AdminPages currentPage = AdminPages.None;
+
+    private void ShowPage(AdminPages page)
+    {
+        currentPage = page;
+    }
+}
+
+<style>
+
+    .custom-btn {
+        width: 60%;
+        transition: all 0.3s ease; 
+        font-weight: bold; 
+    }    
+        .custom-btn.active {
+            background-color: lightgreen; 
+            color: black; 
+            border: 2px solid lightgreen; 
+        }
+
+  
+        .custom-btn.inactive {
+            background-color: black; 
+            color: lightgreen; 
+            border: 2px solid lightgreen; 
+        }     
+        .custom-btn:hover {
+            filter: brightness(1.2); 
+        }
+</style>

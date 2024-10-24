@@ -1,0 +1,99 @@
+﻿@using TeaShopDemo.Models
+@inject TeaShopDemo.Services.CartService CartService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h3 class="display-6">Your Cart</h3>
+    </div>
+
+    @if (CartService.GetCartItems().Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center">Product</th>
+                        <th class="text-center">Name</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in CartService.GetCartItems())
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <img src="@item.ImageUrl" alt="@item.Name" style="width: 80px; height: auto;" />
+                            </td>
+                            <td class="text-center">@item.Name</td>
+                            <td class="text-center">@item.Price.ToString()</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-sm btn-secondary" @onclick="() => DecreaseQuantity(item.ProductId)">-</button>
+                                    <span class="mx-2">@item.Quantity</span>
+                                    <button class="btn btn-sm btn-secondary" @onclick="() => IncreaseQuantity(item.ProductId)">+</button>
+                                </div>
+                            </td>
+                            <td class="text-center">@((item.Price * item.Quantity).ToString())</td>
+                            <td class="text-center">
+                                <button class="btn btn-danger btn-sm" @onclick="() => RemoveItem(item.ProductId)">
+                                    <i class="fa fa-trash"></i> Remove
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-end">
+            <h4>Total Price: @CartService.GetTotalPrice().ToString()</h4>
+            <button class="btn btn-secondary" @onclick="ClearCart">
+                <i class="fa fa-trash-alt"></i> Clear Cart
+            </button>
+            <button @onclick="GoToCheckout" class="btn btn-primary ms-2">
+                <i class="fa fa-credit-card"></i> Proceed to Checkout
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <p>Your cart is empty.</p>
+            <a href="product-list-url" class="btn btn-primary">
+                <i class="fa fa-shopping-basket"></i> Continue Shopping
+            </a>
+        </div>
+    }
+</div>
+
+@code {
+    void RemoveItem(int productId)
+    {
+        CartService.RemoveFromCart(productId);
+    }
+
+    void ClearCart()
+    {
+        CartService.ClearCart();
+    }
+
+    void IncreaseQuantity(int productId)
+    {
+        CartService.UpdateQuantity(productId, 1);
+    }
+
+    void DecreaseQuantity(int productId)
+    {
+        CartService.UpdateQuantity(productId, -1);
+    }
+
+    private void GoToCheckout()
+    {       
+        NavigationManager.NavigateTo("/checkout");
+    }
+}

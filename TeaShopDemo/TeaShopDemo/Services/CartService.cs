@@ -41,6 +41,20 @@ namespace TeaShopDemo.Services
             return _userCarts.GetOrAdd(sessionId, new List<CartItem>());
         }
 
+        public void UpdateQuantity(int productId, int change)
+        {
+            var cartItem = GetCartItems().FirstOrDefault(item => item.ProductId == productId);
+            if (cartItem != null)
+            {
+                cartItem.Quantity += change;
+       
+                if (cartItem.Quantity <= 0)
+                {
+                    RemoveFromCart(productId);
+                }
+            }
+        }
+
         public async Task AddToCart(CartItem item)
         {
             var cart = GetCartItems();
@@ -60,6 +74,8 @@ namespace TeaShopDemo.Services
         private string GetSessionId()
         {
             var context = _httpContextAccessor.HttpContext;
+            if (context is null)
+                return string.Empty;
 
             if (!context.Session.TryGetValue("SessionId", out _))
             {

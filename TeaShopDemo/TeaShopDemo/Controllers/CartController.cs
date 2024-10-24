@@ -40,7 +40,5 @@ namespace TeaShopDemo.Controllers
             _cartService.ClearCart();
             return RedirectToAction("Index");
         }
-
-
     }  
 }

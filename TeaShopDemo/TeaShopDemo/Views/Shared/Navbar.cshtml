@@ -15,8 +15,7 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
                     <a asp-controller="Home" asp-action="Index" class="nav-item nav-link active">Home</a>
-                    <a asp-controller="about" asp-action="Index" class="nav-item nav-link">About</a>
-                    <a asp-controller="Products" asp-action="Index" class="nav-item nav-link">Products</a>
+                    <a asp-controller="about" asp-action="Index" class="nav-item nav-link">About</a>              
                     <a asp-controller="Store" asp-action="Index" class="nav-item nav-link">Store</a>                  
 
                     <partial name="_LoginPartial" />              
@@ -50,18 +49,4 @@
     });
 </script>
 
-@* <script>
-    $(document).ready(function () {
-        function updateCartCount() {
-            $.ajax({
-                url: '/api/Cart/Count',
-                type: 'GET',
-                success: function (data) {
-                    $('#cartItemCount').text(data);
-                }
-            });
-        }
-        setInterval(updateCartCount, 500);
-    });
-</script> *@
 <script src="~/js/signalr.min.js"></script>

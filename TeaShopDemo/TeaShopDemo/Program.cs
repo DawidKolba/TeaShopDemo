@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using TeaShopDemo.Data;
 using TeaShopDemo.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("TeaShopDemoContextConnection")
     ?? throw new InvalidOperationException("Connection string 'TeaShopDemoContextConnection' not found.");
+
+
 builder.Services.AddDbContext<TeaShopDemoContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -31,8 +33,17 @@ builder.Services.AddAuthorization(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Events.OnRedirectToLogin = async context =>
+    {
+        if (context.HttpContext.User.IsInRole("Admin"))
+        {
+            context.RedirectUri = "/admin"; 
+        }
+        await Task.CompletedTask;
+    };
 });
 
 builder.Services.AddSession(options =>
@@ -47,6 +58,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<CartService>();
+builder.Services.AddScoped<ProductService>();
 builder.Services.AddSingleton<IUserIdProvider, SessionUserIdProvider>();
 
 builder.Services.AddSignalR();
@@ -76,11 +88,19 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapBlazorHub();
+app.MapFallbackToController("Index", "Home");
+
+
 app.MapHub<CartHub>("/cartHub");
+
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "{controller=Admin}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

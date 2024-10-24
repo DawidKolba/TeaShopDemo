@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@page "/admin/add-product"
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using TeaShopDemo.Models
+@using TeaShopDemo.Services
+@inject ProductService ProductService
+@inject IJSRuntime JSRuntime
+
+<h4>Add Product</h4>
+
+<div>
+    <EditForm Model="newProduct" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label>Name</label>
+            <InputText @bind-Value="newProduct.Name" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Price</label>
+            <InputNumber @bind-Value="newProduct.Price" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <InputTextArea @bind-Value="newProduct.Description" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Upload Image</label>
+            <InputFile OnChange="HandleFileSelected" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </div>
+    </EditForm>
+</div>
+
+<!-- Toast message -->
+<div id="toast" class="toast" style="display:none">
+    <div class="toast-body">
+        Product added successfully!
+    </div>
+</div>
+
+@code {
+    private Product newProduct = new Product();
+
+    private IBrowserFile imageFile;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        imageFile = e.File;
+        var buffer = new byte[imageFile.Size];
+        await imageFile.OpenReadStream().ReadAsync(buffer);
+
+        newProduct.ImageFile = new FormFile(new MemoryStream(buffer), 0, imageFile.Size, "name", imageFile.Name);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await ProductService.AddProductAsync(newProduct);
+        newProduct = new Product();
+        await JSRuntime.InvokeVoidAsync("ShowToast");
+    }
+}
+
+<script>
+    window.ShowModal = function (modalId) {
+        var modalEl = document.querySelector(modalId);
+        var modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+
+    window.ShowToast = function () {
+        var toastEl = document.getElementById('toast');
+        var toast = new bootstrap.Toast(toastEl, { delay: 500 });
+        toast.show();
+    }
+</script>
