@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using TeaShopDemo.Models;
 using TeaShopDemo.Services;
 
 namespace TeaShopDemo.Controllers
@@ -8,10 +10,12 @@ namespace TeaShopDemo.Controllers
     public class CartController : Controller
     {
         private readonly CartService _cartService;
+        private ISession _session;
 
-        public CartController(CartService cartService)
+        public CartController(CartService cartService, IHttpContextAccessor httpContextAccessor)
         {
             _cartService = cartService;
+            _session = httpContextAccessor.HttpContext.Session;
         }
 
         [HttpGet("Count")]
@@ -26,6 +30,16 @@ namespace TeaShopDemo.Controllers
             var cartItems = _cartService.GetCartItems();
             return View(cartItems);
         }
+
+        [HttpPost("SaveCartToSession")]
+        public IActionResult SaveCartToSession([FromBody] List<CartItem> cartItems)
+        {
+            var cartData = JsonConvert.SerializeObject(cartItems);
+            _session.SetString("CartData", cartData);
+
+            return Ok();
+        }
+
 
         [HttpPost]
         public IActionResult Remove(int productId)

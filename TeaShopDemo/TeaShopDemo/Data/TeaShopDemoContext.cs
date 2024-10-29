@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TeaShopDemo.Models;
+using TeaShopDemo.Models.TeaShopDemo.Models;
 
 public class TeaShopDemoContext : IdentityDbContext<IdentityUser>
 {
@@ -11,7 +12,9 @@ public class TeaShopDemoContext : IdentityDbContext<IdentityUser>
     }
 
     public DbSet<Product> Products { get; set; }
-   // public DbSet<CartItem> CartItems { get; set; }
+
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -20,9 +23,5 @@ public class TeaShopDemoContext : IdentityDbContext<IdentityUser>
         builder.Entity<Product>()
             .ToTable("Products")
             .HasKey(p => p.ProductId);
-
-        //builder.Entity<CartItem>()
-        //    .ToTable("CartItems")
-        //    .HasKey(ci => ci.ProductId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using TeaShopDemo.Models;
 
@@ -10,6 +11,7 @@ namespace TeaShopDemo.Services
         private readonly ConcurrentDictionary<string, List<CartItem>> _userCarts = new();
             
         private readonly IHubContext<CartHub> _hubContext;
+        private readonly List<CartItem> _cartItems = new();
 
         public CartService(IHttpContextAccessor httpContextAccessor, IHubContext<CartHub> hubContext)
         {
@@ -55,6 +57,34 @@ namespace TeaShopDemo.Services
             }
         }
 
+        //public void LoadCartFromSession()
+        //{
+        //    var context = _httpContextAccessor.HttpContext;
+        //    if (context is null)
+        //        return;
+
+        //    if (context.Session.TryGetValue("CartData", out _))
+        //    {
+        //        var cartData = context.Session.GetString("CartData");
+        //        var cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cartData);
+
+        //        var sessionId = GetSessionId();
+        //        _userCarts[sessionId] = cartItems;
+        //    }
+        //}
+
+
+        //public void SaveCartToSession()
+        //{
+        //    var context = _httpContextAccessor.HttpContext;
+        //    if (context is null)
+        //        return;
+
+        //    var cart = GetCartItems();
+        //    var cartData = JsonConvert.SerializeObject(cart);
+        //    context.Session.SetString("CartData", cartData);
+        //}
+
         public async Task AddToCart(CartItem item)
         {
             var cart = GetCartItems();
@@ -69,7 +99,33 @@ namespace TeaShopDemo.Services
             }
             var sessionId = GetSessionId();
             await _hubContext.Clients.User(sessionId).SendAsync("UpdateCartCount", GetCartItems().Count);
-        }            
+        }
+
+        //public async Task AddToCart(CartItem item)
+        //{
+        //    var existingItem = _cartItems.FirstOrDefault(i => i.ProductId == item.ProductId);
+        //    if (existingItem != null)
+        //    {
+        //        existingItem.Quantity += item.Quantity;
+        //    }
+        //    else
+        //    {
+        //        _cartItems.Add(item);
+        //    }
+
+        //    var cart = GetCartItems();
+        //    //var existingItem = cart.FirstOrDefault(i => i.ProductId == item.ProductId);
+        //    //if (existingItem != null)
+        //    //{
+        //    //    existingItem.Quantity += item.Quantity;
+        //    //}
+        //    //else
+        //    //{
+        //    //    cart.Add(item);
+        //    //}
+        //    var sessionId = GetSessionId();
+        //    await _hubContext.Clients.User(sessionId).SendAsync("UpdateCartCount", GetCartItems().Count);
+        //}            
 
         private string GetSessionId()
         {

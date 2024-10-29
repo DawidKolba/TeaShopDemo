@@ -1,5 +1,4 @@
-﻿@page "/store"
-@using Microsoft.JSInterop
+﻿@using Microsoft.JSInterop
 @using TeaShopDemo.Models
 @using TeaShopDemo.Services
 @using Microsoft.AspNetCore.Components.Web
@@ -65,7 +64,7 @@
             <div class="modal-body">
                 <img src="@selectedProduct?.ImageUrl" class="img-fluid mb-3" alt="@selectedProduct?.Name" />
                 <p>@selectedProduct?.Description</p>
-                <h4 class="text-primary">@selectedProduct?.Price.ToString("C")</h4>
+                <h4 class="text-primary">@selectedProduct?.Price.ToString()</h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -24,11 +24,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<TeaShopDemoContext>();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAdministratorRole",
-        policy => policy.RequireRole("Administrator"));
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("RequireAdministratorRole",
+//        policy => policy.RequireRole("Administrator"));
+//});
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -63,6 +63,8 @@ builder.Services.AddSingleton<IUserIdProvider, SessionUserIdProvider>();
 
 builder.Services.AddSignalR();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
+
 
 var app = builder.Build();
 
@@ -88,8 +90,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapBlazorHub();
-app.MapFallbackToController("Index", "Home");
 
+//app.MapFallbackToPage("/_Host");
+app.MapFallbackToController("Index", "Home");
 
 app.MapHub<CartHub>("/cartHub");
 
