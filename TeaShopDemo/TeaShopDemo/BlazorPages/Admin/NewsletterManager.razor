@@ -1,0 +1,109 @@
+﻿@page "/app/admin/newsletter-manager"
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using TeaShopDemo.Models.Enums
+@using Microsoft.AspNetCore.Components.Web
+@using TeaShopDemo.Models
+@using TeaShopDemo.Services
+@inject NewsletterService NewsletterService
+@inject NavigationManager NavigationManager
+
+<h3>Newsletter Management</h3>
+
+<div class="mb-4">
+    <button class="btn btn-primary" @onclick="ShowCreateForm">Create New Newsletter</button>
+</div>
+
+@if (showCreateForm)
+{
+    <EditForm Model="@newNewsletter" OnValidSubmit="HandleCreateNewsletter">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Subject -->
+        <div class="mb-3">
+            <label class="form-label">Subject</label>
+            <InputText class="form-control" @bind-Value="newNewsletter.Subject" />
+            <ValidationMessage For="@(() => newNewsletter.Subject)" />
+        </div>
+
+        <!-- HTML Content -->
+        <div class="mb-3">
+            <label class="form-label">HTML Content</label>
+            <InputTextArea class="form-control" @bind-Value="newNewsletter.HtmlContent" rows="10" />
+            <ValidationMessage For="@(() => newNewsletter.HtmlContent)" />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success">Save Newsletter</button>
+        <button type="button" class="btn btn-secondary" @onclick="HideCreateForm">Cancel</button>
+    </EditForm>
+}
+else
+{
+    @if (newsletters == null)
+    {
+        <p>Loading newsletters...</p>
+    }
+    else if (!newsletters.Any())
+    {
+        <p>No newsletters found.</p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Subject</th>
+                    <th>Creation Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var newsletter in newsletters)
+                {
+                    <tr>
+                        <td>@newsletter.Id</td>
+                        <td>@newsletter.Subject</td>
+                        <td>@newsletter.CreationDate.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+    private List<Newsletter> newsletters;
+    private Newsletter newNewsletter = new Newsletter();
+    private bool showCreateForm = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNewsletters();
+    }
+
+    private async Task LoadNewsletters()
+    {
+        newsletters = await NewsletterService.GetAllNewslettersAsync();
+    }
+
+    private void ShowCreateForm()
+    {
+        newNewsletter = new Newsletter();
+        showCreateForm = true;
+    }
+
+    private void HideCreateForm()
+    {
+        showCreateForm = false;
+    }
+
+    private async Task HandleCreateNewsletter()
+    {
+        newNewsletter.CreationDate = DateTime.Now;
+        await NewsletterService.CreateNewsletterAsync(newNewsletter);
+        showCreateForm = false;
+        await LoadNewsletters();
+    }
+}

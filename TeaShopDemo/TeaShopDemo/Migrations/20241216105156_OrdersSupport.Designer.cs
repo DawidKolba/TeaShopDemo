@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TeaShopDemo.Migrations
 {
     [DbContext(typeof(TeaShopDemoContext))]
-    partial class TeaShopDemoContextModelSnapshot : ModelSnapshot
+    [Migration("20241216105156_OrdersSupport")]
+    partial class OrdersSupport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -208,46 +211,6 @@ namespace TeaShopDemo.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TeaShopDemo.Models.Newsletter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("HtmlContent")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Newsletters");
-                });
-
-            modelBuilder.Entity("TeaShopDemo.Models.NewsletterSubscription", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("SubscribedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NewsletterSubscriptions");
-                });
-
             modelBuilder.Entity("TeaShopDemo.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -276,9 +239,6 @@ namespace TeaShopDemo.Migrations
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("OrderStatus")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()

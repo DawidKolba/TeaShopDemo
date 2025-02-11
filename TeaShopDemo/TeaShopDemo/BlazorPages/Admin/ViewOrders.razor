@@ -1,0 +1,108 @@
+﻿@page "/app/admin/view-orders"
+@using Microsoft.JSInterop
+@using TeaShopDemo.Models
+@using TeaShopDemo.Models.Enums
+@using TeaShopDemo.Services
+@using Microsoft.AspNetCore.Components.Web
+@inject OrderService OrderService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<h4>Order List</h4>
+
+@if (orders == null)
+{
+    <p>Loading orders...</p>
+}
+else if (orders.Count == 0)
+{
+    <p>No orders available.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Full Name</th>
+                <th>Total Price</th>
+                <th>Order Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.FullName</td>
+                    <td>@order.TotalPrice.ToString("C")</td>
+                    <td>@order.OrderDate.ToString("g")</td>
+                    <td>
+                        <select @onchange="async (e) => await UpdateOrderStatus(order.OrderId, e.Value.ToString())">
+                            @foreach (var status in Enum.GetValues<OrderStatus>())
+                            {
+                                <option value="@status" selected="@(order.OrderStatus == status)">@status</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => ViewOrderDetails(order.OrderId)">View Details</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteOrder(order.OrderId)">Delete</button>
+                    </td>
+                </tr>
+                @if (selectedOrderId == order.OrderId)
+                {
+                    <tr>
+                        <td colspan="6">
+                            <OrderDetails OrderId="selectedOrderId.Value" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Order> orders;
+    private int? selectedOrderId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await OrderService.GetAllOrdersAsync();
+    }
+
+    private async Task DeleteOrder(int orderId)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("window.confirm", "Are you sure you want to delete this order?");
+        if (confirmed)
+        {
+            await OrderService.DeleteOrderAsync(orderId);
+            orders = await OrderService.GetAllOrdersAsync();
+        }
+    }
+
+    void ViewOrderDetails(int orderId)
+    {
+        if (selectedOrderId == orderId)
+        {
+            selectedOrderId = null; // Hide details if already displayed
+        }
+        else
+        {
+            selectedOrderId = orderId; // Show details of the selected order
+        }
+    }
+
+    private async Task UpdateOrderStatus(int orderId, string status)
+    {
+        var order = orders.FirstOrDefault(o => o.OrderId == orderId);
+        if (order != null)
+        {
+            order.OrderStatus = Enum.Parse<OrderStatus>(status);
+            await OrderService.UpdateOrderAsync(order);
+        }
+    }
+}

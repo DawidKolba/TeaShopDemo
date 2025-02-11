@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TeaShopDemo.Models.Enums;
 using TeaShopDemo.Models.TeaShopDemo.Models;
 
 namespace TeaShopDemo.Models
@@ -15,7 +16,7 @@ namespace TeaShopDemo.Models
         public string Country { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
-
+        public OrderStatus OrderStatus { get; set; }
         public List<OrderItem> OrderItems { get; set; }
     }
 }

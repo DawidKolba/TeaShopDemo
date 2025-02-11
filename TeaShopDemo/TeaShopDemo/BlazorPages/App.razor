@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Routing
+@namespace TeaShopDemo.BlazorPages
+<Router AppAssembly="@typeof(TeaShopDemo.BlazorPages.App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" />
+    </Found>
+    <NotFound>
+        <LayoutView>
+            <h1>Page not found</h1>
+            <p>Sorry, but there's nothing here.</p>
+        </LayoutView>
+    </NotFound>
+</Router>

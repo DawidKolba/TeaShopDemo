@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using TeaShopDemo.Models;
 using TeaShopDemo.Services;
 
 namespace TeaShopDemo.Controllers

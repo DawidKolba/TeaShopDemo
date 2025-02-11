@@ -1,0 +1,73 @@
+﻿@page "/app/admin/order-details/{OrderId:int}"
+@using TeaShopDemo.Models
+@using TeaShopDemo.Services
+@inject OrderService OrderService
+@inject NavigationManager NavigationManager
+
+@code {
+    [Parameter]
+    public int OrderId { get; set; }
+
+    private Order order;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        order = await OrderService.GetOrderByIdAsync(OrderId);
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/admin", true);
+    }
+}
+
+<div class="container" style="margin-top: 10rem;">
+    <div class="row">
+        <div class="col-12 col-md-3">
+            @if (order == null)
+            {
+                <p>Loading order details...</p>
+            }
+            else
+            {
+                <h3>Order Details - Order #@order.OrderId</h3>
+
+                <h4>Customer Information</h4>
+                <p><strong>Full Name:</strong> @order.FullName</p>
+                <p><strong>Address:</strong> @order.AddressLine1 @if (!string.IsNullOrEmpty(order.AddressLine2)) { @order.AddressLine2 }</p>
+                <p><strong>City:</strong> @order.City</p>
+                <p><strong>Postal Code:</strong> @order.PostalCode</p>
+                <p><strong>Country:</strong> @order.Country</p>
+
+                <h4>Order Items</h4>
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">Product ID</th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <tr>
+                                <td class="text-center">@item.ProductId</td>
+                                <td class="text-center">@item.Product.Name</td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-center">@item.Price.ToString("C")</td>
+                                <td class="text-center">@(@item.Quantity * @item.Price).ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <h4>Total Price: @order.TotalPrice.ToString("C")</h4>
+
+                <button class="btn btn-secondary" @onclick="GoBack">Back to Orders</button>
+            }
+        </div>
+    </div>
+</div>

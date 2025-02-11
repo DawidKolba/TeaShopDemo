@@ -33,8 +33,7 @@
 </div>
 <!-- Navbar End -->
 
-<script src="~/lib/signalr.min.js"></script>
-
+<script src="~/js/signalr.min.js"></script>
 <script>
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/cartHub")
@@ -49,4 +48,3 @@
     });
 </script>
 
-<script src="~/js/signalr.min.js"></script>

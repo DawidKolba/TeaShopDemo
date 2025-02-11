@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Components.Web
+﻿@page "/app/checkout"
+@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Forms
 @using TeaShopDemo.Models
 @using TeaShopDemo.Models.TeaShopDemo.Models
@@ -62,11 +63,21 @@
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary">Finalize Order</button>
         </EditForm>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3" role="alert">
+                @errorMessage
+            </div>
+        }
     }
     else
     {
         <div class="alert alert-success mt-3" role="alert">
             Thank you for your order! This is just a demo, and no real purchase was made.
+        </div>
+        <div class="text-center mt-3">
+            <button class="btn btn-primary" @onclick="GoToHome">Go to Home</button>
         </div>
     }
 </div>
@@ -74,6 +85,7 @@
 @code {
     private OrderInfo orderInfo = new OrderInfo();
     private bool isOrderSubmitted = false;
+    private string errorMessage;
 
     private async Task HandleCheckout()
     {
@@ -82,22 +94,22 @@
         if (cartItems.Any())
         {
             var order = new Order
+            {
+                FullName = orderInfo.FullName,
+                AddressLine1 = orderInfo.AddressLine1,
+                AddressLine2 = orderInfo.AddressLine2,
+                City = orderInfo.City,
+                PostalCode = orderInfo.PostalCode,
+                Country = orderInfo.Country,
+                OrderDate = DateTime.Now,
+                TotalPrice = cartItems.Sum(item => item.Price * item.Quantity),
+                OrderItems = cartItems.Select(item => new OrderItem
                 {
-                    FullName = orderInfo.FullName,
-                    AddressLine1 = orderInfo.AddressLine1,
-                    AddressLine2 = orderInfo.AddressLine2,
-                    City = orderInfo.City,
-                    PostalCode = orderInfo.PostalCode,
-                    Country = orderInfo.Country,
-                    OrderDate = DateTime.Now,
-                    TotalPrice = cartItems.Sum(item => item.Price * item.Quantity),
-                    OrderItems = cartItems.Select(item => new OrderItem
-                    {
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        Price = item.Price
-                    }).ToList()
-                };
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Price = item.Price
+                }).ToList()
+            };
 
             await OrderService.CreateOrderAsync(order);
 
@@ -107,12 +119,12 @@
         }
         else
         {
-           //todo
+            errorMessage = "Your cart is empty. Please add items to your cart before proceeding to checkout.";
         }
     }
 
-    protected override void OnInitialized()
+    private void GoToHome()
     {
-        var cartItems = CartService.GetCartItems();
+        NavigationManager.NavigateTo("/", true);
     }
 }

@@ -1,4 +1,5 @@
-﻿@using Microsoft.JSInterop
+﻿@page "/app/ProductList"
+@using Microsoft.JSInterop
 @using TeaShopDemo.Models
 @using TeaShopDemo.Services
 @using Microsoft.AspNetCore.Components.Web
@@ -7,9 +8,11 @@
 @inject ProductService ProductService
 @inject CartService CartService
 
-<div class="container-xxl py-5">
+       
+
+<div class="container-xxl py-5" >
     <div class="container">
-        <div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+        <div class="section-title text-center mx-auto " style="max-width: 500px;">
             <p class="fs-5 fw-medium fst-italic text-primary">Online Store</p>
             <h1 class="display-6">Want to stay healthy? Choose tea taste</h1>
         </div>
@@ -26,7 +29,8 @@
             {
                 @foreach (var product in Products.Take(ProductLimit ?? Products.Count))
                 {
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 col-md-6" >
+             
                         <div class="store-item position-relative text-center">
                             <img class="img-fluid" src="@product.ImageUrl" alt="@product.Name">
                             <div class="p-4">

@@ -12,7 +12,18 @@
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
     </p>
 }
-
+@if (TempData["SubscriptionSuccess"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["SubscriptionSuccess"]
+    </div>
+}
+@if (TempData["SubscriptionError"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["SubscriptionError"]
+    </div>
+}
 <h3>Development Mode</h3>
 <p>
     Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.

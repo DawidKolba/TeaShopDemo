@@ -1,0 +1,43 @@
+﻿@using TeaShopDemo.Models
+@using TeaShopDemo.Services;
+@inject NewsletterService NewsletterService
+
+<h3>Newsletter Subscribers</h3>
+
+@if (subscriptions == null)
+{
+    <p>Loading subscribers...</p>
+}
+else if (!subscriptions.Any())
+{
+    <p>No subscribers found.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Subscribed At</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subscriber in subscriptions)
+            {
+                <tr>
+                    <td>@subscriber.Email</td>
+                    <td>@subscriber.SubscribedAt.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<NewsletterSubscription> subscriptions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        subscriptions = await NewsletterService.GetAllSubscriptionsAsync();
+    }
+}
