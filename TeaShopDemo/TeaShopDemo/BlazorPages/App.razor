@@ -1,14 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
 @namespace TeaShopDemo.BlazorPages
+
 <Router AppAssembly="@typeof(TeaShopDemo.BlazorPages.App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>
     <NotFound>
-        <LayoutView>
+        <LayoutView Layout="@typeof(MainLayout)">
             <h1>Page not found</h1>
             <p>Sorry, but there's nothing here.</p>
+            <a href="/" class="btn btn-primary">Return to homepage</a>
         </LayoutView>
     </NotFound>
 </Router>
+
+<ErrorBoundary>
+    <ErrorContent Context="exception">
+        <div class="alert alert-danger">
+            <p>Wystąpił błąd aplikacji: @exception.Message</p>
+        </div>
+    </ErrorContent>
+</ErrorBoundary>

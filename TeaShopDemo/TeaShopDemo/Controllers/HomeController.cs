@@ -35,7 +35,7 @@ namespace TeaShopDemo.Controllers
        // [Route("{*path}")]
         public IActionResult BlazorHost()
         {
-            return View("_Hosts");
+            return View("_Host");
         }
         public IActionResult Privacy()
         {

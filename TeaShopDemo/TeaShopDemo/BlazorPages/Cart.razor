@@ -100,7 +100,16 @@
     }
 
     private async Task GoToCheckout()
-    {     
-         NavigationManager.NavigateTo("/app/checkout", true);
-    } 
+    {
+
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("eval", "window.location.href = '/app/checkout'");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Navigation error: {ex.Message}");
+            NavigationManager.NavigateTo("/app/checkout", true);
+        }
+    }
 }

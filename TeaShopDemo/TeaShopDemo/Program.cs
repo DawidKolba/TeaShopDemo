@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TeaShopDemo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -88,22 +87,14 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllers();
 app.MapBlazorHub();
 app.MapHub<CartHub>("/cartHub");
 
-//app.MapFallbackToController("BlazorHost", "Home");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-//app.MapFallbackToPage("/_Host");
+
 app.MapRazorPages();
-//app.MapFallbackToPage("/app/{*catchall}", "/BlazorHost");
 app.MapFallbackToPage("/app/{*catchall}", "/_Host");
-//app.MapFallbackToPage("/blazor/{*catchall}", "/_Host");
-
-//app.MapFallbackToController("Blazor", "Home");
-//app.MapFallbackToAreaPage("/app/{*path:nonfile}", "/BlazorHost", "Blazor");
-
 app.Run();
